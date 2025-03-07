@@ -1,5 +1,6 @@
 import os
 import cv2
+import matplotlib.pyplot as plt
 
 
 def fetch_images(path: str, directory: str) -> list:
@@ -110,6 +111,46 @@ def load_data(_type: str = "train") -> dict:
 
     return output
 
+def visualize_data(rows: int = 4, cols: int = 9) -> None:
+    """
+    Visualizes a grid of images from the dataset.
+
+    Args:
+        rows (int, optional): Number of rows in the grid. Defaults to 4.
+        cols (int, optional): Number of columns in the grid. Defaults to 9.
+    """
+    data = []
+    path = r"C:\Jean Eudes Folder\_Projects\Computer_Vision_Project\Fruit&Vegetables\src\Datasets\train"
+    # retrieve labels
+    labels = os.listdir(path)
+    
+    for element in labels:
+        # retrieve images by category
+        data.append(fetch_images(path, element)[0])
+    
+    fig, axes = plt.subplots(rows, cols, figsize=(15, 5))
+    fig.subplots_adjust(hspace=0.5)
+    fig.suptitle("Fruit & Vegetables Dataset", fontsize=16)
+
+    for i, ax in enumerate(axes.flat):
+        if i >= len(data):
+            break  # Stop if we run out of images
+        
+        img = data[i]
+        label = labels[i]
+
+        ax.imshow(img)
+        ax.set_title(label)
+        ax.axis('off')
+    
+    # save the plot
+    save_path = r"C:\Jean Eudes Folder\_Projects\Computer_Vision_Project\Fruit&Vegetables\src\Outcomes\Fruit&Vegetables_Dataset.jpg"
+    plt.savefig(save_path, bbox_inches='tight', dpi=600) # Well-framed and high-quality image
+
+    plt.show()
+
+
+
 if __name__ == "__main__":
     train_dataset = load_data(_type="train")
     validation_dataset = load_data(_type="validation")
@@ -118,3 +159,5 @@ if __name__ == "__main__":
     print(f"Training dataset size : {len(train_dataset['feature'])}")
     print(f"Validation dataset size : {len(validation_dataset['feature'])}")
     print(f"Testing dataset size : {len(test_dataset['feature'])}")
+
+    # visualize_data()

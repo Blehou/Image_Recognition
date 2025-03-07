@@ -15,12 +15,12 @@ def create_CNN_model(inputShape: tuple = (224, 224, 3), num_classes: int = 36) -
     """
     model = tf.keras.Sequential([
         tf.keras.Input(shape=inputShape),
-        tf.keras.layers.Conv2D(filters=96, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
+        tf.keras.layers.Conv2D(filters=96, kernel_size=(3, 3), strides=1, padding='same', activation='relu'),
         tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=2, padding='valid'),
-        tf.keras.layers.Conv2D(filters=128, kernel_size=(3, 3), strides=(1, 1), padding='valid', activation='relu'),
+        tf.keras.layers.Conv2D(filters=128, kernel_size=(3, 3), strides=1, padding='same', activation='relu'),
         tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Conv2D(filters=200, kernel_size=(3, 3), strides=(1, 1), padding='valid', activation='relu'),
-        tf.keras.layers.AveragePooling2D(pool_size=(2, 2), strides=2, padding='valid'),
+        tf.keras.layers.Conv2D(filters=200, kernel_size=(3, 3), strides=1, padding='same', activation='relu'),
+        tf.keras.layers.AveragePooling2D(pool_size=(2, 2), strides=2, padding='same'),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.0001)),
         tf.keras.layers.Dropout(0.3),

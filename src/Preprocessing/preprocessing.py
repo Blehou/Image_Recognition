@@ -1,10 +1,41 @@
 import os
 import cv2
 import numpy as np
+import tensorflow as tf
 
 import matplotlib.pyplot as plt
-from dataLoader import load_data
+from Preprocessing.dataLoader import load_data
 
+
+def augment_image(image):
+    """
+    Applies random transformations to an image for data augmentation.
+
+    Args:
+        image (tf.Tensor): Input image tensor of shape (height, width, channels).
+
+    Returns:
+        tf.Tensor: Augmented image tensor of shape (224, 224, 3).
+    
+    Transformations applied:
+        - Random horizontal flip
+        - Random vertical flip
+        - Random brightness adjustment
+        - Random contrast adjustment
+        - Random saturation adjustment
+        - Random hue adjustment
+        - Resize with padding to (230, 230)
+        - Random crop back to (224, 224)
+    """
+    image = tf.image.random_flip_left_right(image)  # Flip horizontal
+    image = tf.image.random_flip_up_down(image)  # Flip vertical
+    image = tf.image.random_brightness(image, max_delta=0.2)  # Change brightness
+    image = tf.image.random_contrast(image, lower=0.8, upper=1.2)  # Change contrast
+    image = tf.image.random_saturation(image, lower=0.8, upper=1.2)  # Change saturation
+    image = tf.image.random_hue(image, max_delta=0.1)  # Change hue
+    image = tf.image.resize_with_crop_or_pad(image, 230, 230)  # Crop + Padding
+    image = tf.image.random_crop(image, size=[224, 224, 3])  # Random Crop
+    return image
 
 def encode_labels(labels: list) -> list:
     """
@@ -97,7 +128,7 @@ def preprocessing(_type: str = "train", resize_dim: tuple = (224, 224)) -> dict:
     
     normalized_images_arr = normalized_images_arr[indices]
     _Labels_arr = _Labels_arr[indices]
-
+        
     # save labels and images in the dictionary
     output["feature"] = normalized_images_arr
     output["label"] = _Labels_arr
